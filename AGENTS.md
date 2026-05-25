@@ -45,6 +45,7 @@
 - `xwalk/` 目录的 .zip 已从 git 中移除（104MB）
 - `nextlib-media3ext` 如果后续要重新引入，需将 JDK 升级到 17
 - 本地构建时 `local.properties` 指向本地 Android SDK，不同机器需重新创建
+- `commandlinetools-linux-11076708_latest.zip` 需要 Java 17，JDK 11 环境需使用 `commandlinetools-linux-9477386_latest.zip`
 
 ## 开发计划（Phase 2 开始）
 

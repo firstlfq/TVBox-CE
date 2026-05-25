@@ -1,0 +1,65 @@
+package com.github.tvbox.osc.util
+
+import com.orhanobut.hawk.Hawk
+
+object HawkConfig {
+    const val PUSH_TO_ADDR = "push_to_addr"
+    const val PUSH_TO_PORT = "push_to_port"
+    const val API_URL = "api_url"
+    const val API_HISTORY = "api_history"
+    const val LIVE_URL = "live_url"
+    const val LIVE_HISTORY = "live_history"
+    const val EPG_URL = "epg_url"
+    const val EPG_HISTORY = "epg_history"
+    const val PROXY_SERVER = "proxy_server"
+    const val DEBUG_OPEN = "debug_open"
+    const val HOME_API = "home_api"
+    const val HOME_REC = "home_rec"
+    const val HOME_REC_STYLE = "home_rec_style"
+    const val HOME_NUM = "home_num"
+    const val HOME_SHOW_SOURCE = "show_source"
+    const val HOME_LOCALE = "language"
+    const val HOME_SEARCH_POSITION = "search_position"
+    const val HOME_MENU_POSITION = "menu_position"
+    const val HOME_DEFAULT_SHOW = "home_default_show"
+    const val SHOW_PREVIEW = "show_preview"
+    const val IJK_CODEC = "ijk_codec"
+    const val PLAY_TYPE = "play_type"
+    const val PLAY_RENDER = "play_render"
+    const val PLAY_SCALE = "play_scale"
+    const val PLAY_TIME_STEP = "play_time_step"
+    const val PIC_IN_PIC = "pic_in_pic"
+    const val VIDEO_PURIFY = "video_purify"
+    const val IJK_CACHE_PLAY = "ijk_cache_play"
+    const val EXO_RENDERER = "exo_renderer"
+    const val EXO_RENDERER_MODE = "exo_renderer_mode"
+    const val VOD_PLAYER_PREFERRED = "vod_player_preferred"
+    const val DOH_URL = "doh_url"
+    const val DEFAULT_PARSE = "parse_default"
+    const val SEARCH_VIEW = "search_view"
+    const val SOURCES_FOR_SEARCH = "checked_sources_for_search"
+    const val STORAGE_DRIVE_SORT = "storage_drive_sort"
+    const val SUBTITLE_TEXT_SIZE = "subtitle_text_size"
+    const val SUBTITLE_TEXT_STYLE = "subtitle_text_style"
+    const val SUBTITLE_TIME_DELAY = "subtitle_time_delay"
+    const val THEME_SELECT = "theme_select"
+    const val BACKGROUND_PLAY_TYPE = "background_play_type"
+    const val FAST_SEARCH_MODE = "fast_search_mode"
+    const val SCREEN_DISPLAY = "screen_display"
+    const val SEARCH_FILTER_KEY = "search_filter_key"
+    const val LIVE_CHANNEL = "last_live_channel_name"
+    const val LIVE_CHANNEL_GROUP = "last_live_channel_group_name"
+    const val LIVE_CHANNEL_REVERSE = "live_channel_reverse"
+    const val LIVE_CROSS_GROUP = "live_cross_group"
+    const val LIVE_CONNECT_TIMEOUT = "live_connect_timeout"
+    const val LIVE_SHOW_NET_SPEED = "live_show_net_speed"
+    const val LIVE_SHOW_TIME = "live_show_time"
+    const val LIVE_SKIP_PASSWORD = "live_skip_password"
+    const val LIVE_PLAYER_TYPE = "live_player_type"
+
+    @JvmStatic
+    fun isDebug(): Boolean = Hawk.get(DEBUG_OPEN, false)
+
+    @JvmField
+    var hotVodDelete: Boolean = false
+}

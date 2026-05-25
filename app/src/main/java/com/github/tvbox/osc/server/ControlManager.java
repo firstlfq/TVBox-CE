@@ -16,35 +16,29 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import dagger.hilt.android.qualifiers.ApplicationContext;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
-/**
- * @author pj567
- * @date :2021/1/4
- * @description:
- */
+@Singleton
 public class ControlManager {
     private static ControlManager instance;
     private RemoteServer mServer = null;
-    public static Context mContext;
+    private Context mContext;
 
-    private ControlManager() {
-
+    @Inject
+    public ControlManager(@ApplicationContext Context context) {
+        instance = this;
+        mContext = context;
     }
 
     public static ControlManager get() {
         if (instance == null) {
-            synchronized (ControlManager.class) {
-                if (instance == null) {
-                    instance = new ControlManager();
-                }
-            }
+            throw new RuntimeException("ControlManager not initialized via Hilt");
         }
         return instance;
-    }
-
-    public static void init(Context context) {
-        mContext = context;
     }
 
     public String getAddress(boolean local) {

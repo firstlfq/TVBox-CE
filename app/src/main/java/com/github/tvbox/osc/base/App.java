@@ -57,6 +57,9 @@ public class App extends MultiDexApplication {
 
     @Inject
     ApiConfig apiConfig;
+
+    @Inject
+    ControlManager controlManager;
     
     private static P2PClass p;
     public static String burl;
@@ -83,8 +86,6 @@ public class App extends MultiDexApplication {
         XXPermissions.setCheckMode(false);
         // Get EPG Info
         EpgUtil.init();
-        // 初始化Web服务器
-        ControlManager.init(this);
         //数据库由 Hilt 注入 AppDataManager 自动初始化
         LoadSir.beginBuilder()
                 .addCallback(new EmptyCallback())

@@ -56,11 +56,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.github.tvbox.osc.util.LOG;
-/**
- * @author pj567
- * @date :2020/12/18
- * @description:
- */
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class ApiConfig {
     private static ApiConfig instance;
     private final LinkedHashMap<String, SourceBean> sourceBeanList;
@@ -82,7 +82,9 @@ public class ApiConfig {
 
     private final String requestAccept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9";
 
-    private ApiConfig() {
+    @Inject
+    public ApiConfig() {
+        instance = this;
         clearLoader();
         sourceBeanList = new LinkedHashMap<>();
         liveChannelGroupList = new ArrayList<>();
@@ -91,11 +93,7 @@ public class ApiConfig {
 
     public static ApiConfig get() {
         if (instance == null) {
-            synchronized (ApiConfig.class) {
-                if (instance == null) {
-                    instance = new ApiConfig();
-                }
-            }
+            throw new RuntimeException("ApiConfig not initialized via Hilt");
         }
         return instance;
     }

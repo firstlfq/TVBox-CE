@@ -16,6 +16,7 @@ import com.github.catvod.crawler.JsLoader;
 import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.callback.EmptyCallback;
 import com.github.tvbox.osc.callback.LoadingCallback;
+import com.github.tvbox.osc.api.ApiConfig;
 import com.github.tvbox.osc.data.AppDataManager;
 import com.github.tvbox.osc.server.ControlManager;
 import com.github.tvbox.osc.util.EpgUtil;
@@ -53,6 +54,9 @@ public class App extends MultiDexApplication {
     private static App instance;
     @Inject
     AppDataManager appDataManager;
+
+    @Inject
+    ApiConfig apiConfig;
     
     private static P2PClass p;
     public static String burl;

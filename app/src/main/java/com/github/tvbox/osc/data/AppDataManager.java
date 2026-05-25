@@ -14,30 +14,19 @@ import com.github.tvbox.osc.util.FileUtils;
 import java.io.File;
 import java.io.IOException;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
-/**
- * 类描述:
- *
- * @author pj567
- * @since 2020/5/15
- */
+@Singleton
 public class AppDataManager {
     private static final int DB_FILE_VERSION = 3;
     private static final String DB_NAME = "tvbox";
-    private static volatile AppDataManager manager;
-    private static AppDataBase dbInstance;
+    private static AppDataManager instance;
+    private AppDataBase dbInstance;
 
-    private AppDataManager() {
-    }
-
-    public static void init() {
-        if (manager == null) {
-            synchronized (AppDataManager.class) {
-                if (manager == null) {
-                    manager = new AppDataManager();
-                }
-            }
-        }
+    @Inject
+    public AppDataManager() {
+        instance = this;
     }
 
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
@@ -80,9 +69,13 @@ public class AppDataManager {
     }
 
     public static AppDataBase get() {
-        if (manager == null) {
-            throw new RuntimeException("AppDataManager is no init");
+        if (instance == null) {
+            throw new RuntimeException("AppDataManager not initialized via Hilt");
         }
+        return instance.getDb();
+    }
+
+    private AppDataBase getDb() {
         if (dbInstance == null)
             dbInstance = Room.databaseBuilder(App.getInstance(), AppDataBase.class, dbPath())
                     .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
@@ -92,22 +85,21 @@ public class AppDataManager {
                         @Override
                         public void onCreate(@NonNull SupportSQLiteDatabase db) {
                             super.onCreate(db);
-//                        LOG.i("数据库第一次创建成功");
                         }
 
                         @Override
                         public void onOpen(@NonNull SupportSQLiteDatabase db) {
                             super.onOpen(db);
-//                        LOG.i("数据库打开成功");
                         }
-                    }).allowMainThreadQueries()//可以在主线程操作
+                    }).allowMainThreadQueries()
                     .build();
         return dbInstance;
     }
 
     public static boolean backup(File path) throws IOException {
-        if (dbInstance != null && dbInstance.isOpen()) {
-            dbInstance.close();
+        AppDataManager mgr = instance;
+        if (mgr != null && mgr.dbInstance != null && mgr.dbInstance.isOpen()) {
+            mgr.dbInstance.close();
         }
         File db = App.getInstance().getDatabasePath(dbPath());
         if (db.exists()) {
@@ -119,8 +111,9 @@ public class AppDataManager {
     }
 
     public static boolean restore(File path) throws IOException {
-        if (dbInstance != null && dbInstance.isOpen()) {
-            dbInstance.close();
+        AppDataManager mgr = instance;
+        if (mgr != null && mgr.dbInstance != null && mgr.dbInstance.isOpen()) {
+            mgr.dbInstance.close();
         }
         File db = App.getInstance().getDatabasePath(dbPath());
         if (db.exists()) {

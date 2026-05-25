@@ -9,6 +9,8 @@ import androidx.multidex.MultiDexApplication;
 
 import com.github.catvod.crawler.JarLoader;
 
+import javax.inject.Inject;
+
 import dagger.hilt.android.HiltAndroidApp;
 import com.github.catvod.crawler.JsLoader;
 import com.github.tvbox.osc.R;
@@ -49,6 +51,9 @@ import me.jessyan.autosize.unit.Subunits;
 @HiltAndroidApp
 public class App extends MultiDexApplication {
     private static App instance;
+    @Inject
+    AppDataManager appDataManager;
+    
     private static P2PClass p;
     public static String burl;
     private static String dashData;
@@ -76,8 +81,7 @@ public class App extends MultiDexApplication {
         EpgUtil.init();
         // 初始化Web服务器
         ControlManager.init(this);
-        //初始化数据库
-        AppDataManager.init();
+        //数据库由 Hilt 注入 AppDataManager 自动初始化
         LoadSir.beginBuilder()
                 .addCallback(new EmptyCallback())
                 .addCallback(new LoadingCallback())

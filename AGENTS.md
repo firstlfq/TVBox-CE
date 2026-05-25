@@ -28,6 +28,7 @@
 4. **构建验证通过** — arm64 release APK 正常生成
 5. **重新初始化 Git 仓库** — 作者已修正为 lee，已推送至 GitHub
 6. **Phase 2 — 项目结构优化完成** — 添加 namespace, .editorconfig, lint.xml, 删除 XWalkView 所有代码
+7. **Phase 3 (第一批) — Hilt DI 迁移完成** — App.java @HiltAndroidApp, AppDataManager/ApiConfig/ControlManager 转为 @Singleton 并保留静态 get() 桥接
 
 ## 关键架构
 
@@ -36,7 +37,7 @@
 - `app/src/main/jniLibs/` — 预编译 so（IJKPlayer、QuickJS、P2P）
 - 播放器方案：ExoPlayer 单引擎（无 nextlib 扩展），未集成 IJKPlayer
 - 数据层：Room DB (SQLite)
-- DI：手动单例模式（待改造）
+- DI：Hilt 管理核心单例（AppDataManager, ApiConfig, ControlManager），静态 get() 作为向后兼容桥接
 - 事件通信：EventBus（待改造）
 - 无 Navigation Component，使用 Activity/Fragment 间显式调用
 
@@ -57,7 +58,8 @@
 - [x] 添加 lint 检查配置
 
 ### Phase 3 — 基础架构改造
-- [ ] Hilt DI 替换手动单例（ApiConfig, AppDataManager 等）
+- [x] Hilt DI 替换手动单例 — App.java @HiltAndroidApp, AppDataManager/ApiConfig/ControlManager 转 @Singleton，保留静态 get() 桥接
+- [ ] 后续：消除静态 get()，全面迁移到 @Inject 注入方式
 - [ ] 核心工具类 Kotlin 迁移
 - [ ] Repository 模式统一数据访问
 - [ ] Sealed Class + StateFlow 替代 EventBus

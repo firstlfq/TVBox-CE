@@ -30,10 +30,19 @@ android {
         exclude 'META-INF/DEPENDENCIES'
     }
 
+    signingConfigs {
+        debug {
+            storeFile file("${System.getProperty('user.home')}/.android/debug.keystore")
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storePassword 'android'
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true
-
+            signingConfig signingConfigs.debug
         }
     }
 

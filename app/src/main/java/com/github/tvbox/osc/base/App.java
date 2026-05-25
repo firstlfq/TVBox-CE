@@ -19,6 +19,7 @@ import com.github.tvbox.osc.callback.LoadingCallback;
 import com.github.tvbox.osc.api.ApiConfig;
 import com.github.tvbox.osc.data.AppDataManager;
 import com.github.tvbox.osc.server.ControlManager;
+import xyz.doikki.videoplayer.exo.ExoMediaSourceHelper;
 import com.github.tvbox.osc.util.EpgUtil;
 import com.github.tvbox.osc.util.FileUtils;
 import com.github.tvbox.osc.util.HawkConfig;
@@ -60,6 +61,9 @@ public class App extends MultiDexApplication {
 
     @Inject
     ControlManager controlManager;
+
+    @Inject
+    ExoMediaSourceHelper exoMediaSourceHelper;
     
     private static P2PClass p;
     public static String burl;

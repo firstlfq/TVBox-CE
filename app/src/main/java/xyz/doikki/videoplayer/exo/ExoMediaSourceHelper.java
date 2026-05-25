@@ -38,11 +38,16 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import dagger.hilt.android.qualifiers.ApplicationContext;
 import okhttp3.OkHttpClient;
 
+@Singleton
 public final class ExoMediaSourceHelper {
 
-    private static volatile ExoMediaSourceHelper sInstance;
+    private static ExoMediaSourceHelper sInstance;
 
     private final String mUserAgent;
     private final Context mAppContext;
@@ -52,18 +57,16 @@ public final class ExoMediaSourceHelper {
     private Cache mCache;
 
     @SuppressLint("UnsafeOptInUsageError")
-    private ExoMediaSourceHelper(Context context) {
+    @Inject
+    public ExoMediaSourceHelper(@ApplicationContext Context context) {
+        sInstance = this;
         mAppContext = context.getApplicationContext();
         mUserAgent = Util.getUserAgent(mAppContext, mAppContext.getApplicationInfo().name);
     }
 
     public static ExoMediaSourceHelper getInstance(Context context) {
         if (sInstance == null) {
-            synchronized (ExoMediaSourceHelper.class) {
-                if (sInstance == null) {
-                    sInstance = new ExoMediaSourceHelper(context);
-                }
-            }
+            throw new RuntimeException("ExoMediaSourceHelper not initialized via Hilt");
         }
         return sInstance;
     }

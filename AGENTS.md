@@ -27,6 +27,7 @@
 3. **HawkUtils.java** — 移除了 NextRenderersFactory 引用，统一用 DefaultRenderersFactory
 4. **构建验证通过** — arm64 release APK 正常生成
 5. **重新初始化 Git 仓库** — 作者已修正为 lee，已推送至 GitHub
+6. **Phase 2 — 项目结构优化完成** — 添加 namespace, .editorconfig, lint.xml, 删除 XWalkView 所有代码
 
 ## 关键架构
 
@@ -50,10 +51,10 @@
 ## 开发计划（Phase 2 开始）
 
 ### Phase 2 — 项目结构优化
-- [ ] 在 `app/build.gradle` 中添加 `namespace = "com.github.tvbox.osc"`（AGP 8 兼容准备）
-- [ ] 清理过时依赖（XWalkView 相关代码、过时第三方库）
-- [ ] 添加 `.editorconfig`
-- [ ] 添加 lint 检查配置
+- [x] 在 `app/build.gradle` 中添加 `namespace = "com.github.tvbox.osc"`（AGP 8 兼容准备）
+- [x] 清理过时依赖（XWalkView 相关代码、过时第三方库）
+- [x] 添加 `.editorconfig`
+- [x] 添加 lint 检查配置
 
 ### Phase 3 — 基础架构改造
 - [ ] Hilt DI 替换手动单例（ApiConfig, AppDataManager 等）

@@ -8,6 +8,8 @@ import androidx.core.os.HandlerCompat;
 import androidx.multidex.MultiDexApplication;
 
 import com.github.catvod.crawler.JarLoader;
+
+import dagger.hilt.android.HiltAndroidApp;
 import com.github.catvod.crawler.JsLoader;
 import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.callback.EmptyCallback;
@@ -44,6 +46,7 @@ import me.jessyan.autosize.unit.Subunits;
  * @date :2020/12/17
  * @description:
  */
+@HiltAndroidApp
 public class App extends MultiDexApplication {
     private static App instance;
     private static P2PClass p;

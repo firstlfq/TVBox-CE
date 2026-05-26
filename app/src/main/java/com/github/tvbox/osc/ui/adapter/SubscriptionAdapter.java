@@ -80,6 +80,9 @@ public class SubscriptionAdapter extends ListAdapter<Subscription, SubscriptionA
         }
         holder.tvSubtitle.setText(subtitle);
 
+        String sourceUrl = item.getMultiUrl() != null ? item.getMultiUrl() : item.getUrl();
+        holder.tvUrl.setText(sourceUrl != null ? sourceUrl : "");
+
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onSourceClick(item);
         });
@@ -94,6 +97,7 @@ public class SubscriptionAdapter extends ListAdapter<Subscription, SubscriptionA
         TextView tvMultiTag;
         TextView tvName;
         TextView tvSubtitle;
+        TextView tvUrl;
         TextView tvDel;
 
         ViewHolder(@NonNull @NotNull View itemView) {
@@ -101,6 +105,7 @@ public class SubscriptionAdapter extends ListAdapter<Subscription, SubscriptionA
             tvMultiTag = itemView.findViewById(R.id.tvMultiTag);
             tvName = itemView.findViewById(R.id.tvName);
             tvSubtitle = itemView.findViewById(R.id.tvSubtitle);
+            tvUrl = itemView.findViewById(R.id.tvUrl);
             tvDel = itemView.findViewById(R.id.tvDel);
         }
     }

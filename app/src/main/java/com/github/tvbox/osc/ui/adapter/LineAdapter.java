@@ -19,6 +19,7 @@ public class LineAdapter extends ListAdapter<Subscription.Line, LineAdapter.View
 
     public interface LineInterface {
         void onLineClick(Subscription.Line item, int index);
+        void onLineCopy(Subscription.Line item);
     }
 
     private LineInterface listener;
@@ -69,18 +70,24 @@ public class LineAdapter extends ListAdapter<Subscription.Line, LineAdapter.View
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onLineClick(item, position);
         });
+
+        holder.tvCopy.setOnClickListener(v -> {
+            if (listener != null) listener.onLineCopy(item);
+        });
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvCheck;
         TextView tvLineName;
         TextView tvLineUrl;
+        TextView tvCopy;
 
         ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             tvCheck = itemView.findViewById(R.id.tvCheck);
             tvLineName = itemView.findViewById(R.id.tvLineName);
             tvLineUrl = itemView.findViewById(R.id.tvLineUrl);
+            tvCopy = itemView.findViewById(R.id.tvCopy);
         }
     }
 }

@@ -1,5 +1,8 @@
 package com.github.tvbox.osc.ui.activity;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.text.TextUtils;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -86,13 +89,26 @@ public class SubscriptionActivity extends BaseActivity {
             }
         });
 
-        mLineAdapter = new LineAdapter((item, index) -> {
-            if (mCurrentSource != null) {
-                mCurrentSource.setSelectedIndex(index);
-                mLastSelectedUrl = item.getUrl();
-                saveData();
-                showSources();
-                Toast.makeText(SubscriptionActivity.this, "已选择: " + item.getName(), Toast.LENGTH_SHORT).show();
+        mLineAdapter = new LineAdapter(new LineAdapter.LineInterface() {
+            @Override
+            public void onLineClick(Subscription.Line item, int index) {
+                if (mCurrentSource != null) {
+                    mCurrentSource.setSelectedIndex(index);
+                    mLastSelectedUrl = item.getUrl();
+                    saveData();
+                    showSources();
+                    Toast.makeText(SubscriptionActivity.this, "已选择: " + item.getName(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onLineCopy(Subscription.Line item) {
+                String url = item.getUrl();
+                if (url != null && !url.isEmpty()) {
+                    ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                    cm.setPrimaryClip(ClipData.newPlainText(null, url));
+                    Toast.makeText(SubscriptionActivity.this, "已复制: " + url, Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

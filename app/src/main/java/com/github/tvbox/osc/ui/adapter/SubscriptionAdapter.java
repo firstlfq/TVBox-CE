@@ -37,7 +37,7 @@ public class SubscriptionAdapter extends ListAdapter<Subscription, SubscriptionA
             @Override
             public boolean areContentsTheSame(@NonNull Subscription oldItem, @NonNull Subscription newItem) {
                 return oldItem.getSelectedIndex() == newItem.getSelectedIndex()
-                        && oldItem.getName().equals(newItem.getName());
+                        && java.util.Objects.equals(oldItem.getName(), newItem.getName());
             }
         });
         this.listener = listener;
@@ -58,7 +58,8 @@ public class SubscriptionAdapter extends ListAdapter<Subscription, SubscriptionA
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Subscription item = getItem(position);
         int lineCount = item.getLineCount();
-        boolean isMulti = lineCount > 1 || (lineCount == 1 && !TextUtils.isEmpty(item.getMultiUrl()) && !item.getMultiUrl().equals(item.getLines().get(0).getUrl()));
+        String firstLineUrl = (lineCount == 1 && item.getLines().get(0) != null) ? item.getLines().get(0).getUrl() : null;
+        boolean isMulti = lineCount > 1 || (lineCount == 1 && !TextUtils.isEmpty(item.getMultiUrl()) && !item.getMultiUrl().equals(firstLineUrl));
 
         holder.tvMultiTag.setText(isMulti ? "📦" : "📄");
         holder.tvName.setText(item.getName());

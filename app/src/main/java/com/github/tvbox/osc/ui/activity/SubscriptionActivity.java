@@ -188,9 +188,10 @@ public class SubscriptionActivity extends BaseActivity {
                 .execute(new AbsCallback<String>() {
                     @Override
                     public void onSuccess(Response<String> response) {
+                        if (SubscriptionActivity.this.isFinishing()) return;
                         showSuccess();
                         String body = response.body();
-                        if (body == null) {
+                        if (TextUtils.isEmpty(body)) {
                             createSingleSource(url);
                             return;
                         }
@@ -214,6 +215,7 @@ public class SubscriptionActivity extends BaseActivity {
 
                     @Override
                     public void onError(Response<String> response) {
+                        if (SubscriptionActivity.this.isFinishing()) return;
                         showSuccess();
                         createSingleSource(url);
                     }
@@ -290,7 +292,7 @@ public class SubscriptionActivity extends BaseActivity {
     private String getEffectiveUrl() {
         for (Subscription s : mSources) {
             Subscription.Line line = s.getSelectedLine();
-            if (line != null) {
+            if (line != null && !TextUtils.isEmpty(line.getUrl())) {
                 return line.getUrl();
             }
         }

@@ -33,7 +33,8 @@ public class LineAdapter extends ListAdapter<Subscription.Line, LineAdapter.View
 
             @Override
             public boolean areContentsTheSame(@NonNull Subscription.Line oldItem, @NonNull Subscription.Line newItem) {
-                return oldItem.getName().equals(newItem.getName()) && oldItem.getUrl().equals(newItem.getUrl());
+                if (oldItem.getName() == null || newItem.getName() == null) return false;
+                return oldItem.getName().equals(newItem.getName()) && java.util.Objects.equals(oldItem.getUrl(), newItem.getUrl());
             }
         });
         this.listener = listener;
@@ -62,8 +63,8 @@ public class LineAdapter extends ListAdapter<Subscription.Line, LineAdapter.View
 
         holder.tvCheck.setText(isSelected ? "✓" : "");
         holder.tvCheck.setVisibility(isSelected ? View.VISIBLE : View.INVISIBLE);
-        holder.tvLineName.setText(item.getName());
-        holder.tvLineUrl.setText(item.getUrl());
+        holder.tvLineName.setText(item.getName() != null ? item.getName() : "");
+        holder.tvLineUrl.setText(item.getUrl() != null ? item.getUrl() : "");
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onLineClick(item, position);

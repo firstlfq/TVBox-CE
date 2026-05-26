@@ -51,17 +51,17 @@ public class Subscription {
     }
 
     public static class Line {
-        String name;
-        String url;
+        private String name = "";
+        private String url = "";
 
         public Line() {}
         public Line(String name, String url) {
-            this.name = name;
-            this.url = url;
+            this.name = name != null ? name : "";
+            this.url = url != null ? url : "";
         }
-        public String getName() { return name; }
+        public String getName() { return name != null ? name : ""; }
         public void setName(String name) { this.name = name; }
-        public String getUrl() { return url; }
+        public String getUrl() { return url != null ? url : ""; }
         public void setUrl(String url) { this.url = url; }
     }
 

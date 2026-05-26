@@ -446,7 +446,12 @@ public class HomeActivity extends BaseActivity {
         mGridView.requestFocus();
 
         if (dataInitOk && jarInitOk) {
-            sourceViewModel.getSort(ApiConfig.get().getHomeSourceBean().getKey());
+            String homeKey = ApiConfig.get().getHomeSourceBean().getKey();
+            System.out.println("DEBUG-initData: homeKey=" + homeKey);
+            if (homeKey == null) {
+                Toast.makeText(this, "DEBUG: homeKey=null, sites=" + (ApiConfig.get().getSourceBeanList() != null ? ApiConfig.get().getSourceBeanList().size() : -1), Toast.LENGTH_LONG).show();
+            }
+            sourceViewModel.getSort(homeKey);
             if (hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 LOG.e("有");
             } else {

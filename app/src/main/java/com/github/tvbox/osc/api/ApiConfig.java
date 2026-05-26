@@ -257,6 +257,7 @@ public class ApiConfig {
 
         boolean isJarInImg = jarUrl.startsWith("img+");
         jarUrl = jarUrl.replace("img+", "");
+        System.out.println("DEBUG-JAR: starting download, url=" + jarUrl + " cache=" + cache.getAbsolutePath() + " exists=" + cache.exists());
         OkGo.<File>get(jarUrl)
                 .headers("User-Agent", userAgent)
                 .headers("Accept", requestAccept)
@@ -268,20 +269,19 @@ public class ApiConfig {
                         assert cacheDir != null;
                         if (!cacheDir.exists()) cacheDir.mkdirs();
                         if (cache.exists()) cache.delete();
-                        // 3. 使用 try-with-resources 确保流关闭
                         assert response.body() != null;
                         try (FileOutputStream fos = new FileOutputStream(cache)) {
                             if (isJarInImg) {
-                                String respData = response.body().string();
-                                LOG.i("echo---jar Response: " + respData);
-                                byte[] imgJar = getImgJar(respData);
-                                if (imgJar == null || imgJar.length == 0) {
-                                    LOG.e("echo---Generated JAR data is empty");
-                                    callback.error("JAR data is empty");
+                                byte[] respBytes = response.body().bytes();
+                                String respStr = new String(respBytes, "ISO-8859-1");
+                                byte[] imgJar = getImgJar(respStr);
+                                if (imgJar != null && imgJar.length > 0) {
+                                    fos.write(imgJar);
+                                } else {
+                                    // getImgJar failed (marker not found), save raw response as-is
+                                    fos.write(respBytes);
                                 }
-                                fos.write(imgJar);
                             } else {
-                                // 使用流式传输避免内存溢出
                                 InputStream inputStream = response.body().byteStream();
                                 byte[] buffer = new byte[4096];
                                 int bytesRead;
@@ -293,6 +293,7 @@ public class ApiConfig {
                         } catch (IOException e) {
                             return null;
                         }
+                        System.out.println("DEBUG-JAR: download complete, path=" + cache.getAbsolutePath() + " size=" + cache.length());
                         return cache;
                     }
 
@@ -354,7 +355,23 @@ public class ApiConfig {
         livePlayHeaders = infoJson.getAsJsonArray("livePlayHeaders");
         // 远端站点源
         SourceBean firstSite = null;
-        JsonArray sites = infoJson.has("video") ? infoJson.getAsJsonObject("video").getAsJsonArray("sites") : infoJson.get("sites").getAsJsonArray();
+        JsonArray sites = null;
+        if (infoJson.has("video") && infoJson.get("video").isJsonObject()) {
+            JsonObject videoObj = infoJson.getAsJsonObject("video");
+            if (videoObj.has("sites")) {
+                sites = videoObj.getAsJsonArray("sites");
+                System.out.println("DEBUG: using video.sites, size=" + sites.size());
+            }
+        }
+        if (sites == null && infoJson.has("sites")) {
+            sites = infoJson.getAsJsonArray("sites");
+            System.out.println("DEBUG: using top-level sites, size=" + sites.size());
+        }
+        if (sites == null) {
+            System.out.println("DEBUG: no sites found in config JSON!");
+            android.widget.Toast.makeText(App.getInstance(), "DEBUG: 没有找到sites", android.widget.Toast.LENGTH_LONG).show();
+            return;
+        }
         for (JsonElement opt : sites) {
             JsonObject obj = (JsonObject) opt;
             SourceBean sb = new SourceBean();
@@ -389,6 +406,10 @@ public class ApiConfig {
                 setSourceBean(firstSite);
             else
                 setSourceBean(sh);
+            System.out.println("DEBUG: parsed " + sourceBeanList.size() + " sites, homeKey=" + (mHomeSource != null ? mHomeSource.getKey() : "NULL"));
+        } else {
+            System.out.println("DEBUG: sourceBeanList empty after parseJson!");
+            android.widget.Toast.makeText(App.getInstance(), "DEBUG: 源解析后站点列表为空", android.widget.Toast.LENGTH_LONG).show();
         }
         // 需要使用vip解析的flag
         vipParseFlags = DefaultConfig.safeJsonStringList(infoJson, "flags");

@@ -37,8 +37,12 @@ public class JarLoader {
      * @param cache
      */
     public boolean load(String cache) {
+        spiders.clear();
         recentJarKey = "main";
-        return loadClassLoader(cache, recentJarKey);
+        proxyMethods.clear();
+        classLoaders.clear();
+        Log.i("JarLoader", "DEBUG: load() called, cache=" + cache + " exists=" + new java.io.File(cache).exists() + " size=" + (new java.io.File(cache).exists() ? new java.io.File(cache).length() : -1));
+        return loadClassLoader(cache, "main");
     }
 
     public void clear() {
@@ -48,53 +52,37 @@ public class JarLoader {
     }
 
     private boolean loadClassLoader(String jar, String key) {
-        if (classLoaders.containsKey(key)){
-            Log.i("JarLoader", "echo-loadClassLoader jar缓存: " + key);
-            return true;
-        }
         boolean success = false;
         try {
             File cacheDir = new File(App.getInstance().getCacheDir().getAbsolutePath() + "/catvod_csp");
             if (!cacheDir.exists())
                 cacheDir.mkdirs();
-            final DexClassLoader classLoader = new DexClassLoader(jar, cacheDir.getAbsolutePath(), null, App.getInstance().getClassLoader());
+            DexClassLoader classLoader = new DexClassLoader(jar, cacheDir.getAbsolutePath(), null, App.getInstance().getClassLoader());
             int count = 0;
             do {
                 try {
-                    final Class<?> classInit = classLoader.loadClass("com.github.catvod.spider.Init");
+                    Class classInit = classLoader.loadClass("com.github.catvod.spider.Init");
                     if (classInit != null) {
-                        final Method initMethod = classInit.getMethod("init", Context.class);
-                        // 在子线程中调用 init 方法，避免网络请求在主线程中执行
-                        Thread initThread = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    initMethod.invoke(null, App.getInstance());
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                        initThread.start();
-                        initThread.join();
-                        Log.i("JarLoader", "echo-自定义爬虫代码加载成功!");
+                        Method method = classInit.getMethod("init", Context.class);
+                        method.invoke(null, App.getInstance());
                         success = true;
                         try {
-                            Class<?> proxy = classLoader.loadClass("com.github.catvod.spider.Proxy");
-                            Method proxyMethod = proxy.getMethod("proxy", Map.class);
-                            proxyMethods.put(key, proxyMethod);
+                            Class proxy = classLoader.loadClass("com.github.catvod.spider.Proxy");
+                            Method mth = proxy.getMethod("proxy", Map.class);
+                            proxyMethods.put(key, mth);
                         } catch (Throwable th) {
-                            // 可以记录错误日志
-                            th.printStackTrace();
                         }
                         break;
                     }
-                    Thread.sleep(200);
                 } catch (Throwable th) {
                     th.printStackTrace();
+                    Log.i("JarLoader", "DEBUG: count=" + count + " exception=" + th.getClass().getName() + " msg=" + th.getMessage());
+                    try { Thread.sleep(200); } catch (InterruptedException ie) {}
                 }
                 count++;
-            } while (count < 2);
+            } while (count < 5);
+
+            Log.i("JarLoader", "DEBUG: loadClassLoader result=" + success);
 
             if (success) {
                 classLoaders.put(key, classLoader);
@@ -173,7 +161,10 @@ public class JarLoader {
         recentJarKey = jarKey;
         assert jarKey != null;
         DexClassLoader classLoader = jarKey.equals("main")? classLoaders.get("main"):loadJarInternal(jarUrl, jarMd5, jarKey);
-        if (classLoader == null) return new SpiderNull();
+        if (classLoader == null) {
+            Log.i("JarLoader", "DEBUG: getSpider(" + key + ") classLoader=null, classLoaders.size=" + classLoaders.size() + " has main=" + classLoaders.containsKey("main"));
+            return new SpiderNull();
+        }
         try {
             Log.i("JarLoader", "echo-getSpider 加载spider: " + key);
             Spider sp = (Spider) classLoader.loadClass("com.github.catvod.spider." + clsKey).newInstance();

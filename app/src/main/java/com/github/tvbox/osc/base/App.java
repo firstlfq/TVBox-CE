@@ -183,7 +183,12 @@ public class App extends MultiDexApplication {
             List<Subscription> subs = new ArrayList<>();
             String existingUrl = Hawk.get(HawkConfig.API_URL, "");
             if (!TextUtils.isEmpty(existingUrl)) {
-                subs.add(new Subscription("默认配置", existingUrl).setChecked(true));
+                Subscription sub = new Subscription("默认配置", existingUrl);
+                List<Subscription.Line> lines = new ArrayList<>();
+                lines.add(new Subscription.Line("默认配置", existingUrl));
+                sub.setLines(lines);
+                sub.setSelectedIndex(0);
+                subs.add(sub);
             }
             Hawk.put(HawkConfig.SUBSCRIPTIONS, subs);
         }

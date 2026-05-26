@@ -16,79 +16,91 @@ import com.github.tvbox.osc.bean.Subscription;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class SubscriptionAdapter extends ListAdapter<Subscription, SubscriptionAdapter.ViewHolder> {
 
-    public interface SubscriptionInterface {
-        void click(Subscription item);
-        void del(Subscription item);
+    public interface SourceInterface {
+        void onSourceClick(Subscription item);
+        void onSourceDelete(Subscription item);
     }
 
-    private ArrayList<Subscription> data = new ArrayList<>();
-    private SubscriptionInterface listener;
+    private SourceInterface listener;
 
-    public SubscriptionAdapter(SubscriptionInterface listener) {
+    public SubscriptionAdapter(SourceInterface listener) {
         super(new DiffUtil.ItemCallback<Subscription>() {
             @Override
             public boolean areItemsTheSame(@NonNull Subscription oldItem, @NonNull Subscription newItem) {
-                return oldItem.getUrl().equals(newItem.getUrl());
+                String oldKey = oldItem.getMultiUrl() != null ? oldItem.getMultiUrl() : oldItem.getUrl();
+                String newKey = newItem.getMultiUrl() != null ? newItem.getMultiUrl() : newItem.getUrl();
+                return oldKey != null && oldKey.equals(newKey);
             }
 
             @Override
             public boolean areContentsTheSame(@NonNull Subscription oldItem, @NonNull Subscription newItem) {
-                return oldItem.getName().equals(newItem.getName()) && oldItem.isChecked() == newItem.isChecked();
+                return oldItem.getSelectedIndex() == newItem.getSelectedIndex()
+                        && oldItem.getName().equals(newItem.getName());
             }
         });
         this.listener = listener;
     }
 
-    public void setData(List<Subscription> newData) {
-        data.clear();
-        data.addAll(newData);
-        notifyDataSetChanged();
-    }
-
     @Override
     public int getItemCount() {
-        return data.size();
+        return getCurrentList().size();
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_subscription, parent, false));
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_source, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Subscription item = data.get(position);
-        String prefix = item.isChecked() ? "✓ " : "  ";
-        String multiTag = !TextUtils.isEmpty(item.getMultiUrl()) ? "[多仓] " : "";
-        holder.tvName.setText(prefix + multiTag + item.getName());
-        holder.tvUrl.setText(item.getUrl());
+        Subscription item = getItem(position);
+        int lineCount = item.getLineCount();
+        boolean isMulti = lineCount > 1 || (lineCount == 1 && !TextUtils.isEmpty(item.getMultiUrl()) && !item.getMultiUrl().equals(item.getLines().get(0).getUrl()));
+
+        holder.tvMultiTag.setText(isMulti ? "📦" : "📄");
+        holder.tvName.setText(item.getName());
+
+        Subscription.Line selected = item.getSelectedLine();
+        String subtitle;
+        if (lineCount == 0) {
+            subtitle = "未解析";
+        } else if (lineCount == 1) {
+            subtitle = "1条线路";
+        } else {
+            subtitle = lineCount + "条线路";
+        }
+        if (selected != null) {
+            subtitle += " · 当前: " + selected.getName();
+        } else if (lineCount > 0) {
+            subtitle += " · 未选择";
+        }
+        holder.tvSubtitle.setText(subtitle);
+
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) listener.click(item);
+            if (listener != null) listener.onSourceClick(item);
         });
+
         holder.tvDel.setOnClickListener(v -> {
-            if (listener != null) listener.del(item);
+            if (listener != null) listener.onSourceDelete(item);
         });
-        holder.ivPushpin.setVisibility(item.isTop() ? View.VISIBLE : View.GONE);
+        holder.tvDel.setVisibility(isMulti || lineCount > 0 ? View.VISIBLE : View.VISIBLE);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView tvMultiTag;
         TextView tvName;
-        TextView tvUrl;
+        TextView tvSubtitle;
         TextView tvDel;
-        TextView ivPushpin;
 
         ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
+            tvMultiTag = itemView.findViewById(R.id.tvMultiTag);
             tvName = itemView.findViewById(R.id.tvName);
-            tvUrl = itemView.findViewById(R.id.tvUrl);
+            tvSubtitle = itemView.findViewById(R.id.tvSubtitle);
             tvDel = itemView.findViewById(R.id.tvDel);
-            ivPushpin = itemView.findViewById(R.id.ivPushpin);
         }
     }
 }

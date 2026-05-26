@@ -1270,14 +1270,16 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/llDns"
-                        android:layout_width="@dimen/vs_0"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/vs_5"
-                        android:layout_marginLeft="@dimen/vs_5"
-                        android:layout_marginEnd="@dimen/vs_5"
-                        android:layout_marginRight="@dimen/vs_5"
-                        android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/vs_50"
+                    android:layout_marginBottom="@dimen/vs_10"
+                    android:focusable="false"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/llDns"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/vs_50"
                         android:background="@drawable/shape_setting_model_focus"
                         android:focusable="true"
                         android:gravity="center_vertical"
@@ -1500,6 +1502,8 @@
                     </LinearLayout>
 
                 </LinearLayout>
+
+            </LinearLayout>
 
             </LinearLayout>
 

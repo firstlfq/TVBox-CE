@@ -87,7 +87,7 @@ public class SubscriptionAdapter extends ListAdapter<Subscription, SubscriptionA
         holder.tvDel.setOnClickListener(v -> {
             if (listener != null) listener.onSourceDelete(item);
         });
-        holder.tvDel.setVisibility(isMulti || lineCount > 0 ? View.VISIBLE : View.VISIBLE);
+        holder.tvDel.setVisibility(View.VISIBLE);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

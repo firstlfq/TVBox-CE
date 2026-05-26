@@ -36,6 +36,10 @@ public class SubscriptionActivity extends BaseActivity {
     private String mInitialUrl = "";
     private boolean mShowingLines = false;
     private Subscription mCurrentSource = null;
+    private String mLastSelectedUrl = null;
+    private TextView tvAdd;
+    private TextView tvBack;
+    private TextView tvTitle;
 
     @Override
     protected int getLayoutResID() {
@@ -52,6 +56,10 @@ public class SubscriptionActivity extends BaseActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
         mRecyclerView.setHasFixedSize(true);
 
+        tvAdd = findViewById(R.id.tvAdd);
+        tvBack = findViewById(R.id.tvBack);
+        tvTitle = findViewById(R.id.tvTitle);
+
         mSourceAdapter = new SubscriptionAdapter(new SubscriptionAdapter.SourceInterface() {
             @Override
             public void onSourceClick(Subscription item) {
@@ -60,16 +68,28 @@ public class SubscriptionActivity extends BaseActivity {
 
             @Override
             public void onSourceDelete(Subscription item) {
-                mSources.remove(item);
-                refreshSourceList();
-                saveData();
-                Toast.makeText(SubscriptionActivity.this, "已删除", Toast.LENGTH_SHORT).show();
+                Subscription.Line selectedLine = item.getSelectedLine();
+                if (selectedLine != null && selectedLine.getUrl().equals(mLastSelectedUrl)) {
+                    mLastSelectedUrl = null;
+                }
+                new android.app.AlertDialog.Builder(SubscriptionActivity.this)
+                    .setTitle("确认删除")
+                    .setMessage("确定删除「" + item.getName() + "」吗？")
+                    .setPositiveButton("删除", (d, w) -> {
+                        mSources.remove(item);
+                        refreshSourceList();
+                        saveData();
+                        Toast.makeText(SubscriptionActivity.this, "已删除", Toast.LENGTH_SHORT).show();
+                    })
+                    .setNegativeButton("取消", null)
+                    .show();
             }
         });
 
         mLineAdapter = new LineAdapter((item, index) -> {
             if (mCurrentSource != null) {
                 mCurrentSource.setSelectedIndex(index);
+                mLastSelectedUrl = item.getUrl();
                 saveData();
                 showSources();
                 Toast.makeText(SubscriptionActivity.this, "已选择: " + item.getName(), Toast.LENGTH_SHORT).show();
@@ -79,8 +99,8 @@ public class SubscriptionActivity extends BaseActivity {
         mRecyclerView.setAdapter(mSourceAdapter);
         refreshSourceList();
 
-        findViewById(R.id.tvAdd).setOnClickListener(v -> showAddDialog());
-        findViewById(R.id.tvBack).setOnClickListener(v -> {
+        tvAdd.setOnClickListener(v -> showAddDialog());
+        tvBack.setOnClickListener(v -> {
             if (mShowingLines) {
                 showSources();
             } else {
@@ -112,7 +132,7 @@ public class SubscriptionActivity extends BaseActivity {
         mRecyclerView.setAdapter(mSourceAdapter);
         refreshSourceList();
         updateTitleBar();
-        findViewById(R.id.tvAdd).setVisibility(android.view.View.VISIBLE);
+        tvAdd.setVisibility(android.view.View.VISIBLE);
     }
 
     private void showLines(Subscription source) {
@@ -126,7 +146,7 @@ public class SubscriptionActivity extends BaseActivity {
         mLineAdapter.setSelectedIndex(source.getSelectedIndex());
         mRecyclerView.setAdapter(mLineAdapter);
         updateTitleBar();
-        findViewById(R.id.tvAdd).setVisibility(android.view.View.GONE);
+        tvAdd.setVisibility(android.view.View.GONE);
     }
 
     private void refreshSourceList() {
@@ -134,14 +154,12 @@ public class SubscriptionActivity extends BaseActivity {
     }
 
     private void updateTitleBar() {
-        TextView titleView = findViewById(R.id.tvTitle);
-        TextView backView = findViewById(R.id.tvBack);
         if (mShowingLines && mCurrentSource != null) {
-            titleView.setText(mCurrentSource.getName());
-            backView.setVisibility(android.view.View.VISIBLE);
+            tvTitle.setText(mCurrentSource.getName());
+            tvBack.setVisibility(android.view.View.VISIBLE);
         } else {
-            titleView.setText(R.string.sub_management);
-            backView.setVisibility(android.view.View.GONE);
+            tvTitle.setText(R.string.sub_management);
+            tvBack.setVisibility(android.view.View.GONE);
         }
     }
 
@@ -235,8 +253,21 @@ public class SubscriptionActivity extends BaseActivity {
         return lines;
     }
 
+    private String generateName(String prefix) {
+        int n = 1;
+        while (true) {
+            String name = prefix + ": " + n;
+            boolean exists = false;
+            for (Subscription s : mSources) {
+                if (name.equals(s.getName())) { exists = true; break; }
+            }
+            if (!exists) return name;
+            n++;
+        }
+    }
+
     private void createSingleSource(String url) {
-        String name = "订阅: " + (mSources.size() + 1);
+        String name = generateName("订阅");
         Subscription sub = new Subscription(name, url);
         List<Subscription.Line> lines = new ArrayList<>();
         lines.add(new Subscription.Line(name, url));
@@ -253,7 +284,7 @@ public class SubscriptionActivity extends BaseActivity {
             createSingleSource(multiUrl);
             return;
         }
-        String name = "多仓: " + (mSources.size() + 1);
+        String name = generateName("多仓");
         Subscription sub = new Subscription(name, multiUrl);
         sub.setMultiUrl(multiUrl);
         sub.setLines(lines);
@@ -270,6 +301,7 @@ public class SubscriptionActivity extends BaseActivity {
         }
         builder.setItems(items, (dialog, which) -> {
             sub.setSelectedIndex(which);
+            mLastSelectedUrl = lines.get(which).getUrl();
             saveData();
             Toast.makeText(this, "已选择: " + lines.get(which).getName(), Toast.LENGTH_SHORT).show();
             refreshSourceList();
@@ -290,6 +322,7 @@ public class SubscriptionActivity extends BaseActivity {
     }
 
     private String getEffectiveUrl() {
+        if (mLastSelectedUrl != null) return mLastSelectedUrl;
         for (Subscription s : mSources) {
             Subscription.Line line = s.getSelectedLine();
             if (line != null && !TextUtils.isEmpty(line.getUrl())) {
@@ -315,5 +348,11 @@ public class SubscriptionActivity extends BaseActivity {
             EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_API_URL_CHANGE, effectiveUrl));
         }
         super.finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        OkGo.getInstance().cancelTag("fetch_add");
     }
 }

@@ -3,11 +3,16 @@ package com.github.tvbox.osc.base;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 
 import androidx.core.os.HandlerCompat;
 import androidx.multidex.MultiDexApplication;
 
 import com.github.catvod.crawler.JarLoader;
+import com.github.tvbox.osc.bean.Subscription;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -82,6 +87,8 @@ public class App extends MultiDexApplication {
         super.onCreate();
         SubtitleHelper.initSubtitleColor(this);
         initParams();
+        // Initialize default subscriptions if not set
+        initDefaultSubscriptions();
         // takagen99 : Initialize Locale
         initLocale();
         // OKGo
@@ -169,6 +176,17 @@ public class App extends MultiDexApplication {
         putDefault(HawkConfig.SEARCH_VIEW, 1);               //搜索展示: 0=文字列表, 1=缩略图
         putDefault(HawkConfig.DOH_URL, 0);                   //安全DNS: 0=关闭, 1=腾讯, 2=阿里, 3=360, 4=Google, 5=AdGuard, 6=Quad9
 
+    }
+
+    private void initDefaultSubscriptions() {
+        if (!Hawk.contains(HawkConfig.SUBSCRIPTIONS)) {
+            List<Subscription> subs = new ArrayList<>();
+            String existingUrl = Hawk.get(HawkConfig.API_URL, "");
+            if (!TextUtils.isEmpty(existingUrl)) {
+                subs.add(new Subscription("默认配置", existingUrl).setChecked(true));
+            }
+            Hawk.put(HawkConfig.SUBSCRIPTIONS, subs);
+        }
     }
 
     private void initLocale() {

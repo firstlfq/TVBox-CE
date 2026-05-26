@@ -20,6 +20,9 @@
     <string name="hm_file">Drives</string>
     <string name="hm_fav">Favorite</string>
     <string name="hm_setting">Menu</string>
+    <string name="sub_management">Subscription Management</string>
+    <string name="sub_add">Add</string>
+    <string name="sub_add_fail">Subscription Failed</string>
     <string name="hm_style_line">Line View</string>
     <string name="hm_style_grid">Grid View</string>
     <string name="hm_hist_del">Removed from History</string>

@@ -226,4 +226,9 @@
         <item>首选配置地址</item>
         <item>首选设置配置</item>
     </string-array>
+
+    // Subscription Management //
+    <string name="sub_management">订阅管理</string>
+    <string name="sub_add">添加订阅</string>
+    <string name="sub_add_fail">订阅失败</string>
 </resources>

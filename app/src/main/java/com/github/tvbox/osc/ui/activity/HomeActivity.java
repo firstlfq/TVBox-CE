@@ -722,7 +722,12 @@ public class HomeActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void refresh(RefreshEvent event) {
-        if (event.type == RefreshEvent.TYPE_PUSH_URL) {
+        if (event.type == RefreshEvent.TYPE_API_URL_CHANGE) {
+            useCacheConfig = false;
+            dataInitOk = false;
+            jarInitOk = false;
+            initData();
+        } else if (event.type == RefreshEvent.TYPE_PUSH_URL) {
             if (ApiConfig.get().getSource("push_agent") != null) {
                 Intent newIntent = new Intent(mContext, DetailActivity.class);
                 newIntent.putExtra("id", (String) event.obj);

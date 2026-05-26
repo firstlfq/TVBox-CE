@@ -9,6 +9,7 @@ object HawkConfig {
     const val API_HISTORY = "api_history"
     const val LIVE_URL = "live_url"
     const val LIVE_HISTORY = "live_history"
+    const val SUBSCRIPTIONS = "subscriptions"
     const val EPG_URL = "epg_url"
     const val EPG_HISTORY = "epg_history"
     const val PROXY_SERVER = "proxy_server"

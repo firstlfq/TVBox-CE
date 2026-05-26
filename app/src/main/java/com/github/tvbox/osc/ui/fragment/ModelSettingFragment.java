@@ -21,6 +21,7 @@ import com.github.tvbox.osc.player.thirdparty.Kodi;
 import com.github.tvbox.osc.player.thirdparty.MXPlayer;
 import com.github.tvbox.osc.player.thirdparty.ReexPlayer;
 import com.github.tvbox.osc.ui.activity.SettingActivity;
+import com.github.tvbox.osc.ui.activity.SubscriptionActivity;
 import com.github.tvbox.osc.ui.adapter.ApiHistoryDialogAdapter;
 import com.github.tvbox.osc.ui.adapter.SelectDialogAdapter;
 import com.github.tvbox.osc.ui.dialog.AboutDialog;
@@ -199,6 +200,14 @@ public class ModelSettingFragment extends BaseLazyFragment {
                     }
                 }, history, idx);
                 dialog.show();
+            }
+        });
+        findViewById(R.id.llSubscriptions).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FastClickCheckUtil.check(v);
+                Intent intent = new Intent(mActivity, SubscriptionActivity.class);
+                startActivity(intent);
             }
         });
         // 1. HOME Configuration ---------------------------------------------------------------- //

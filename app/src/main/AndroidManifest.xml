@@ -46,7 +46,7 @@
 
         <activity
             android:name=".ui.activity.HomeActivity"
-            android:screenOrientation="sensorLandscape"
+            android:screenOrientation="user"
             android:exported="true"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation" >
             <intent-filter>
@@ -58,50 +58,50 @@
         </activity>
         <activity
             android:name=".ui.activity.PlayActivity"
-            android:screenOrientation="sensorLandscape"
+            android:screenOrientation="user"
             android:supportsPictureInPicture="true"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation" />
         <activity
             android:name=".ui.activity.DetailActivity"
-            android:screenOrientation="sensorLandscape"
+            android:screenOrientation="user"
             android:supportsPictureInPicture="true"
             android:launchMode="singleTask"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation" />
         <activity
             android:name=".ui.activity.SubscriptionActivity"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="user" />
         <activity
             android:name=".ui.activity.HistoryActivity"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="user" />
         <activity
             android:name=".ui.activity.LivePlayActivity"
-            android:screenOrientation="sensorLandscape"
+            android:screenOrientation="user"
             android:supportsPictureInPicture="true"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation" />
         <activity
             android:name=".ui.activity.CollectActivity"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="user" />
         <activity
             android:name=".ui.activity.PushActivity"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="user" />
         <activity
             android:name=".ui.activity.DriveActivity"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="user" />
         <activity
             android:name=".ui.activity.SearchActivity"
             android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="user" />
         <activity
             android:name=".ui.activity.FastSearchActivity"
             android:windowSoftInputMode="stateHidden"
-            android:screenOrientation="sensorLandscape" 
+            android:screenOrientation="user" 
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation" />
         <activity
             android:name=".ui.activity.AppsActivity"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="user" />
         <activity
             android:name=".ui.activity.SettingActivity"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="user" />
             
         <service
             android:name=".server.PlayService"

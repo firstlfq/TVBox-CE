@@ -201,7 +201,8 @@ public class GridFragment extends BaseLazyFragment {
         if (isFolederMode()) {
             mGridView.setLayoutManager(new V7LinearLayoutManager(this.mContext, 1, false));
         } else {
-            int spanCount = isBaseOnWidth() ? 5 : 6;
+            int sw = getResources().getConfiguration().screenWidthDp;
+            int spanCount = sw < 600 ? 4 : 5;
             if (style != null) {
                 spanCount = ImgUtil.spanCountByStyle(style, spanCount);
             }

@@ -1,5 +1,6 @@
 package com.github.tvbox.osc.ui.adapter;
 
+import android.content.res.Configuration;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,12 +108,15 @@ public class GridAdapter extends BaseQuickAdapter<Movie.Video, BaseViewHolder> {
      */
     private void applyStyleToImage(final ImageView ivThumb) {
         if(style!=null){
+            if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                return;
+            }
             ViewGroup container = (ViewGroup) ivThumb.getParent();
             int width = defaultWidth;
             int height = (int) (width / style.ratio);
             ViewGroup.LayoutParams containerParams = container.getLayoutParams();
-            containerParams.height = AutoSizeUtils.mm2px(mContext, height); // 高度
-            containerParams.width = AutoSizeUtils.mm2px(mContext, width); // 宽度
+            containerParams.height = AutoSizeUtils.mm2px(mContext, height);
+            containerParams.width = AutoSizeUtils.mm2px(mContext, width);
             container.setLayoutParams(containerParams);
         }
     }    

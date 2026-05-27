@@ -136,7 +136,8 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
         tvHotListForLine = findViewById(R.id.tvHotListForLine);
         tvHotListForGrid = findViewById(R.id.tvHotListForGrid);
         tvHotListForGrid.setHasFixedSize(true);
-        int spanCount = 5;
+        int sw = getResources().getConfiguration().screenWidthDp;
+        int spanCount = sw < 600 ? 4 : 5;
         if (Hawk.get(HawkConfig.HOME_REC, 0) == 1 && homeSourceRec!=null) {
             style=ImgUtil.initStyle();
         }

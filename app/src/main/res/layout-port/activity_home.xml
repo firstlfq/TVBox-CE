@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/topLayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="false"
+            android:gravity="left|center_vertical"
+            android:singleLine="true"
+            android:text="@string/app_name"
+            android:textAlignment="gravity"
+            android:textColor="@color/font_home_selector"
+            android:background="@drawable/shape_toplayout_tvname"
+            android:textSize="15dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/tvWifi"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="3dp"
+            android:layout_marginLeft="3dp"
+            android:background="@drawable/button_dialog_vod"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="3dp"
+            android:src="@drawable/hm_wifi_no"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/tvFind"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="3dp"
+            android:layout_marginLeft="3dp"
+            android:background="@drawable/button_dialog_vod"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="3dp"
+            android:src="@drawable/hm_search" />
+
+        <ImageView
+            android:id="@+id/tvStyle"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="3dp"
+            android:layout_marginLeft="3dp"
+            android:background="@drawable/button_dialog_vod"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="3dp"
+            android:src="@drawable/hm_left_right" />
+
+        <ImageView
+            android:id="@+id/tvDrawer"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="3dp"
+            android:layout_marginLeft="3dp"
+            android:background="@drawable/button_dialog_vod"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="3dp"
+            android:src="@drawable/hm_drawer" />
+
+        <ImageView
+            android:id="@+id/tvMenu"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="3dp"
+            android:layout_marginLeft="3dp"
+            android:background="@drawable/button_dialog_vod"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="3dp"
+            android:src="@drawable/hm_settings" />
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="right|center_vertical"
+            android:textAlignment="gravity"
+            android:textColor="@android:color/white"
+            android:textSize="11dp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:text="DateTime" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/contentLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topLayout">
+
+        <com.owen.tvrecyclerview.widget.TvRecyclerView
+            android:id="@+id/mGridViewCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            app:tv_selectedItemIsCentered="true" />
+
+        <com.github.tvbox.osc.ui.tv.widget.NoScrollViewPager
+            android:id="@+id/mViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
